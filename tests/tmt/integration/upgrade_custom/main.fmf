@@ -1,0 +1,13 @@
+summary: Test custom repository upgrade
+framework: beakerlib
+test: ./test.sh
+duration: 4h
+tag:
+  - integration
+  - upgrade_custom
+order: 20
+require:
+    - beakerlib
+    - type: library
+      url: https://github.com/linux-system-roles/tft-tests
+      name: /library/upstream_library

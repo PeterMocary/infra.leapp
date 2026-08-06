@@ -1,0 +1,56 @@
+{
+  "integration": [
+    {
+      "upgrade_type": "custom",
+      "ansible_version": "2.14",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-7-LatestUpdated"
+    },
+    {
+      "upgrade_type": "custom",
+      "ansible_version": "2.16",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-8.10.0-Nightly"
+    },
+    {
+      "upgrade_type": "custom",
+      "ansible_version": "2.17",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-9.8.0-Nightly"
+    }
+  ],
+  "remediation": [
+    {
+      "ansible_version": "2.14",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-7-LatestUpdated"
+    },
+    {
+      "ansible_version": "2.16",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-8.10.0-Nightly"
+    },
+    {
+      "ansible_version": "2.17",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-9.8.0-Nightly"
+    }
+  ],
+  "role": [
+    {
+      "ansible_version": "2.14",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-7-LatestUpdated"
+    },
+    {
+      "ansible_version": "2.16",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-8.10.0-Nightly"
+    },
+    {
+      "ansible_version": "2.17",
+      "compose_controller": "RHEL-9-Nightly",
+      "compose_managed_node": "RHEL-9.8.0-Nightly"
+    }
+  ]
+}

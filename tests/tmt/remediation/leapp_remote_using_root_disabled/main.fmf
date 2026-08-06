@@ -1,0 +1,15 @@
+summary: Test remote_using_root with auth disabled
+framework: beakerlib
+test: ./test.sh
+duration: 2h
+tag:
+  - remediation
+  - leapp_remote_using_root
+  - 7to8
+  - 8to9
+order: 20
+require:
+    - beakerlib
+    - type: library
+      url: https://github.com/linux-system-roles/tft-tests
+      name: /library/upstream_library

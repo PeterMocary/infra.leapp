@@ -1,0 +1,17 @@
+summary: Run integration tests
+tag+:
+  - integration_tests
+
+adjust+:
+  - when: upgrade_type is not defined
+    discover+:
+      - name: Run integration tests
+        how: fmf
+        where: control_node
+        filter: tag:integration
+  - when: upgrade_type == custom
+    discover+:
+      - name: Run integration tests
+        how: fmf
+        where: control_node
+        filter: "tag:integration & tag:upgrade_custom"

@@ -1,0 +1,16 @@
+summary: Test loaded removed kernel drivers remediation
+framework: beakerlib
+test: ./test.sh
+duration: 2h
+tag:
+  - remediation
+  - leapp_loaded_removed_kernel_drivers
+  - 7to8
+  - 8to9
+  - 9to10
+order: 20
+require:
+    - beakerlib
+    - type: library
+      url: https://github.com/linux-system-roles/tft-tests
+      name: /library/upstream_library

@@ -1,0 +1,34 @@
+# set up the test system to trigger the remote root login inhibitor
+# remediation is enabled — the role should fix it
+#
+# From RHEL 8 onward, OpenSSH's compiled default for PermitRootLogin changed
+# from "yes" to "prohibit-password". The RPM sshd_config explicitly sets
+# "PermitRootLogin yes" to preserve backward compatibility.
+#
+# RHEL 7→8: inhibitor fires when config is modified + no PermitRootLogin directive
+#   - RHEL 7 default sshd_config has no PermitRootLogin entry (compiled default: yes)
+#   - if admin modified the config without adding PermitRootLogin, after upgrade
+#     the new compiled default (prohibit-password) silently breaks root password login
+#   - setup: set PasswordAuthentication no to mark the file as modified for rpm -V
+#     while keeping PermitRootLogin absent (which is the inhibitor trigger)
+# RHEL 8→9: inhibitor fires when config is unmodified (RPM default)
+#   - RHEL 8 RPM ships "PermitRootLogin yes" — if unmodified, RPM replaces the
+#     config during upgrade with RHEL 9's version (prohibit-password)
+#   - setup: do nothing — the default 1minutetip image config is already unmodified
+# RHEL 9→10: openssh_permit_root_login actor does nothing (pass) — no inhibitor
+---
+- name: setup | remediate_remote_using_root | Backup /etc/ssh/sshd_config
+  ansible.builtin.copy:
+    src: /etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config.leapp_test_backup
+    remote_src: true
+    mode: preserve
+
+- name: setup | remediate_remote_using_root | Trigger SSH inhibitor on RHEL 7
+  when: rhel_base_ver | int == 7
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+
+...
