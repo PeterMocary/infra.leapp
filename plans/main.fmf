@@ -5,18 +5,28 @@ adjust:
     environment-file+:
       - https://<GitLab CEE RedHat instance>/oamg/tests-ansible-collection-leapp/-/raw/main/leapp_coll_env_file.yml
 
-  # Set ansible version based on managed node RHEL version.
-  # This mapping is only used for local testing (virtual/1minutetip).
-  # In CI, SR_ANSIBLE_VER is passed by the workflow from test-matrix.json.
+  # Per-version mappings for managed node.
+  # In CI, SR_ANSIBLE_VER is also passed by the workflow from test-matrix.json.
   - when: managed_node == rhel7
     environment+:
       SR_ANSIBLE_VER: "2.14"
+      COMPOSE_MANAGED_NODE: "RHEL-7-LatestUpdated"
   - when: managed_node == rhel8
     environment+:
       SR_ANSIBLE_VER: "2.16"
+      COMPOSE_MANAGED_NODE: "RHEL-8.10.0-Nightly"
   - when: managed_node == rhel9
     environment+:
       SR_ANSIBLE_VER: "2.17"
+      COMPOSE_MANAGED_NODE: "RHEL-9.8.0-Nightly"
+
+  # Per-version mappings for control node.
+  - when: control_node == rhel9
+    environment+:
+      COMPOSE_CONTROLLER: "RHEL-9-Nightly"
+  - when: control_node == rhel10
+    environment+:
+      COMPOSE_CONTROLLER: "RHEL-10-Nightly"
 
   # Running locally on local VMs
   # Example run:

@@ -27,7 +27,7 @@ Comment on a PR to trigger tests:
 /citest role                  — run role tests
 ```
 
-The workflow parses the scope and optional subtype from the comment, builds a matrix from `.github/test-matrix.json`, and submits requests to Testing Farm. The subtype is passed as a TMT context dimension (`upgrade_type`) so the plan can filter tests by tag.
+The workflow parses the scope and optional subtype from the comment, builds a matrix from `.github/test-matrix.json` (which contains `managed_node`, `upgrade_type`, and `ansible_version`), and submits requests to Testing Farm. Both `managed_node` and `upgrade_type` are passed as TMT context dimensions so plans can filter tests and select version-specific configuration.
 
 ### Running Tests Locally
 
@@ -66,9 +66,9 @@ The workflow parses the scope and optional subtype from the comment, builds a ma
         -e SR_GITHUB_ORG=redhat-cop \
         -e SR_PR_NUM=303 \
         -e SR_TEST_LOCAL_CHANGES=false \
-        -e COMPOSE_CONTROLLER=RHEL-9-Nightly \
-        -e managed_node=RHEL-8.10.0-Nightly \
         -c initiator=testing-farm \
+        -c managed_node=rhel8 \
+        -c control_node=rhel9 \
         -c upgrade_type=custom \
         --tag user=spetrosi \
         --tag purpose=test-leapp \

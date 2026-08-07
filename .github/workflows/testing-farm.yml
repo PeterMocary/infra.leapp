@@ -147,7 +147,7 @@ jobs:
         run: echo "supported_platforms=${{ steps.supported_platforms.outputs.supported_platforms }}"
 
   testing-farm:
-    name: "${{ needs.parse_command.outputs.test_scope }}${{ matrix.upgrade_type && format('|{0}', matrix.upgrade_type) || '' }}|${{ matrix.compose_managed_node }}|ansible-${{ matrix.ansible_version }}"
+    name: "${{ needs.parse_command.outputs.test_scope }}${{ matrix.upgrade_type && format('|{0}', matrix.upgrade_type) || '' }}|${{ matrix.managed_node }}|ansible-${{ matrix.ansible_version }}"
     needs:
       - parse_command
       - prepare_vars
@@ -168,7 +168,7 @@ jobs:
             scope_label="${scope}"
           fi
           ARTIFACTS_DIR_NAME="tf_${{ github.event.repository.name }}-${{ github.event.issue.number }}_\
-          ${scope_label}-${{ matrix.compose_managed_node }}-${{ matrix.ansible_version }}_$DATETIME/artifacts"
+          ${scope_label}-${{ matrix.managed_node }}-${{ matrix.ansible_version }}_$DATETIME/artifacts"
           ARTIFACTS_TARGET_DIR=/srv/pub/alt/${{ vars.SR_LSR_USER }}/logs
           ARTIFACTS_DIR=$ARTIFACTS_TARGET_DIR/$ARTIFACTS_DIR_NAME
           ARTIFACTS_URL=https://dl.fedoraproject.org/pub/alt/${{ vars.SR_LSR_USER }}/logs/$ARTIFACTS_DIR_NAME
@@ -176,19 +176,18 @@ jobs:
           echo "ARTIFACTS_DIR=$ARTIFACTS_DIR" >> $GITHUB_OUTPUT
           echo "ARTIFACTS_URL=$ARTIFACTS_URL" >> $GITHUB_OUTPUT
 
-      - name: Check if compose is supported
+      - name: Check if platform is supported
         id: platform_check
+        env:
+          PLATFORMS: ${{ needs.prepare_vars.outputs.supported_platforms }}
+          MANAGED_NODE: ${{ matrix.managed_node }}
         run: |
-          platforms="${{ needs.prepare_vars.outputs.supported_platforms }}"
-          compose="${{ matrix.compose_managed_node }}"
+          major_ver="${MANAGED_NODE#rhel}"
           is_supported="false"
 
-          for platform in $platforms; do
-            if [[ "$compose" == *"$platform"* ]]; then
-              is_supported="true"
-              break
-            fi
-          done
+          if echo "$PLATFORMS" | grep -q "RHEL-${major_ver}"; then
+            is_supported="true"
+          fi
 
           echo "is_supported=$is_supported" >> $GITHUB_OUTPUT
 
@@ -198,7 +197,7 @@ jobs:
         with:
           sha: ${{ needs.prepare_vars.outputs.head_sha }}
           status: pending
-          context: "${{ needs.parse_command.outputs.test_scope }}${{ matrix.upgrade_type && format('|{0}', matrix.upgrade_type) || '' }}|${{ matrix.compose_managed_node }}|ansible-${{ matrix.ansible_version }}"
+          context: "${{ needs.parse_command.outputs.test_scope }}${{ matrix.upgrade_type && format('|{0}', matrix.upgrade_type) || '' }}|${{ matrix.managed_node }}|ansible-${{ matrix.ansible_version }}"
           description: Test started
           targetUrl: ""
 
@@ -208,7 +207,7 @@ jobs:
         with:
           sha: ${{ needs.prepare_vars.outputs.head_sha }}
           status: success
-          context: "${{ needs.parse_command.outputs.test_scope }}${{ matrix.upgrade_type && format('|{0}', matrix.upgrade_type) || '' }}|${{ matrix.compose_managed_node }}|ansible-${{ matrix.ansible_version }}"
+          context: "${{ needs.parse_command.outputs.test_scope }}${{ matrix.upgrade_type && format('|{0}', matrix.upgrade_type) || '' }}|${{ matrix.managed_node }}|ansible-${{ matrix.ansible_version }}"
           description: Platform is not supported. Skipping.
           targetUrl: ""
 
@@ -238,8 +237,6 @@ jobs:
             SR_ARTIFACTS_DIR=${{ steps.set_vars.outputs.ARTIFACTS_DIR }};\
             SR_TEST_LOCAL_CHANGES=false;\
             SR_LSR_USER=${{ vars.SR_LSR_USER }};\
-            COMPOSE_CONTROLLER=${{ matrix.compose_controller }};\
-            COMPOSE_MANAGED_NODE=${{ matrix.compose_managed_node }};\
             RHEL_7_9_SERVER_REPO_URL=${{ secrets.RHEL_7_9_SERVER_REPO_URL }};\
             RHEL_7_9_EXTRAS_REPO_URL=${{ secrets.RHEL_7_9_EXTRAS_REPO_URL }};\
             RHEL_8_10_BASEOS_REPO_URL=${{ secrets.RHEL_8_10_BASEOS_REPO_URL }};\
@@ -253,7 +250,7 @@ jobs:
             BEAKERLIB_HARNESS_URL_NO_VER=${{ secrets.BEAKERLIB_HARNESS_URL_NO_VER }};\
             SR_ANSIBLE_INJECT_FACT_VARS=false;\
             SR_ARTIFACTS_URL=${{ steps.set_vars.outputs.ARTIFACTS_URL }}"
-          tmt_context: "initiator=testing-farm${{ matrix.upgrade_type && format(';upgrade_type={0}', matrix.upgrade_type) || '' }}"
+          tmt_context: "initiator=testing-farm;managed_node=${{ matrix.managed_node }};control_node=${{ matrix.control_node }}${{ matrix.upgrade_type && format(';upgrade_type={0}', matrix.upgrade_type) || '' }}"
           # Note that SR_LSR_SSH_KEY must be single-line, TF doesn't read multi-line variables fine.
           secrets: "SR_LSR_DOMAIN=${{ secrets.SR_LSR_DOMAIN }};\
             SR_LSR_SSH_KEY=${{ secrets.SR_LSR_SSH_KEY }}"
@@ -271,6 +268,6 @@ jobs:
         with:
           sha: ${{ needs.prepare_vars.outputs.head_sha }}
           status: ${{ job.status }}
-          context: "${{ needs.parse_command.outputs.test_scope }}${{ matrix.upgrade_type && format('|{0}', matrix.upgrade_type) || '' }}|${{ matrix.compose_managed_node }}|ansible-${{ matrix.ansible_version }}"
+          context: "${{ needs.parse_command.outputs.test_scope }}${{ matrix.upgrade_type && format('|{0}', matrix.upgrade_type) || '' }}|${{ matrix.managed_node }}|ansible-${{ matrix.ansible_version }}"
           description: Test finished
           targetUrl: ${{ steps.set_vars.outputs.ARTIFACTS_URL }}
