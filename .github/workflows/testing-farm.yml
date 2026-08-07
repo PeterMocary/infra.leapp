@@ -51,13 +51,6 @@ jobs:
           echo "test_scope=$scope" >> $GITHUB_OUTPUT
           echo "upgrade_type=$subtype" >> $GITHUB_OUTPUT
 
-      - name: Acknowledge command
-        run: |
-          gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
-            -f content=eyes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Checkout repo
         uses: actions/checkout@v6
 
@@ -74,7 +67,19 @@ jobs:
             matrix=$(echo "$matrix" | jq -c --arg type "$UPGRADE_TYPE" '[.[] | select(.upgrade_type == $type)]')
           fi
 
+          if [ "$matrix" = "[]" ] || [ "$matrix" = "null" ] || [ -z "$matrix" ]; then
+            echo "::error::No matching tests for scope '$SCOPE'${UPGRADE_TYPE:+ with upgrade_type '$UPGRADE_TYPE'}"
+            exit 1
+          fi
+
           echo "matrix={\"include\":$matrix}" >> $GITHUB_OUTPUT
+
+      - name: Acknowledge command
+        run: |
+          gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            -f content=eyes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   prepare_vars:
     name: Get info from collection and PR to determine if and how to test
