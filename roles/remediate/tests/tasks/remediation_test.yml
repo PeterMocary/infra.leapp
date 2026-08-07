@@ -2,7 +2,8 @@
 - name: remediation_test | Run setup for {{ remediation_name }}
   ansible.builtin.include_tasks: "setup/{{ remediation_name }}.yml"
 
-- block:
+- name: remediation_test | Run test and cleanup
+  block:
     - name: remediation_test | Run first analysis
       ansible.builtin.include_tasks: ../../../../tests/tasks/run_role_with_clear_facts.yml
       vars:
