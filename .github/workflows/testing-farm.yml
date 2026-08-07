@@ -30,9 +30,10 @@ jobs:
     steps:
       - name: Parse comment
         id: parse
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
-          comment="${{ github.event.comment.body }}"
-          command=$(echo "$comment" | head -n1)
+          command=$(echo "$COMMENT_BODY" | head -n1)
 
           # Parse: /citest <scope> [subtype]
           # Examples:
@@ -62,15 +63,15 @@ jobs:
 
       - name: Build matrix from test-matrix.json
         id: matrix
+        env:
+          SCOPE: ${{ steps.parse.outputs.test_scope }}
+          UPGRADE_TYPE: ${{ steps.parse.outputs.upgrade_type }}
         run: |
-          scope="${{ steps.parse.outputs.test_scope }}"
-          upgrade_type="${{ steps.parse.outputs.upgrade_type }}"
-
-          matrix=$(jq -c ".${scope}" .github/test-matrix.json)
+          matrix=$(jq -c ".${SCOPE}" .github/test-matrix.json)
 
           # If a specific upgrade type was requested, filter the matrix
-          if [ -n "$upgrade_type" ]; then
-            matrix=$(echo "$matrix" | jq -c "[.[] | select(.upgrade_type == \"$upgrade_type\")]")
+          if [ -n "$UPGRADE_TYPE" ]; then
+            matrix=$(echo "$matrix" | jq -c --arg type "$UPGRADE_TYPE" '[.[] | select(.upgrade_type == $type)]')
           fi
 
           echo "matrix={\"include\":$matrix}" >> $GITHUB_OUTPUT
