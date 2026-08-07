@@ -136,11 +136,9 @@ rlJournalStart
             rlRun "rm -rf $coll_path"
         fi
         if [ "$SR_TEST_LOCAL_CHANGES" == true ]; then
-            local_repo_root=$(find "$TMT_TREE" -name galaxy.yml -print -quit 2>/dev/null)
-            if [ -n "$local_repo_root" ]; then
-                local_repo_root=$(dirname "$local_repo_root")
-            else
-                rlDie "Could not find galaxy.yml under TMT_TREE=$TMT_TREE"
+            local_repo_root="$TMT_TREE"
+            if [ ! -f "$local_repo_root/galaxy.yml" ]; then
+                rlDie "Could not find galaxy.yml at TMT_TREE=$TMT_TREE"
             fi
             rlRun "cp -r $local_repo_root/. $coll_path/"
         else
