@@ -96,6 +96,9 @@
         - "{{ __leapp_reports_controller_dir }}/{{ inventory_hostname }}/{{ __leapp_report_txt | basename }}"
         - "{{ __leapp_reports_controller_dir }}/{{ inventory_hostname }}/{{ __leapp_report_json | basename }}"
 
+    # Skip when testing that a remediation is disabled
+    # (e.g. leapp_remediate_ssh_password_auth: false) —
+    # the inhibitor is expected to persist after the second analysis.
     - name: remediation_test | Assert inhibitor resolved after remediation
       ansible.builtin.assert:
         that:

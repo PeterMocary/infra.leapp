@@ -1,13 +1,9 @@
 summary: Test remediate role postgresql data handling
-framework: beakerlib
-test: ./test.sh
 duration: 1h
 tag:
   - role_test
   - remediate
-order: 20
-require:
-    - beakerlib
-    - type: library
-      url: https://github.com/linux-system-roles/tft-tests
-      name: /library/upstream_library
+environment:
+  TEST_NAME: "Role test: remediate postgresql"
+  PLAYBOOK: "roles/remediate/tests/tests_leapp_old_postgresql_data.yml"
+  LOGFILE_PREFIX: "role-remediate_postgresql"

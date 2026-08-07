@@ -1,13 +1,9 @@
 summary: Test custom repository upgrade
-framework: beakerlib
-test: ./test.sh
 duration: 4h
 tag:
   - integration
   - upgrade_custom
-order: 20
-require:
-    - beakerlib
-    - type: library
-      url: https://github.com/linux-system-roles/tft-tests
-      name: /library/upstream_library
+environment:
+  TEST_NAME: "Custom repository upgrade"
+  PLAYBOOK: "tests/tests_upgrade_custom.yml"
+  LOGFILE_PREFIX: "integration-upgrade_custom"

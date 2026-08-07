@@ -1,13 +1,9 @@
 summary: Test analysis role defaults
-framework: beakerlib
-test: ./test.sh
 duration: 1h
 tag:
   - role_test
   - analysis
-order: 20
-require:
-    - beakerlib
-    - type: library
-      url: https://github.com/linux-system-roles/tft-tests
-      name: /library/upstream_library
+environment:
+  TEST_NAME: "Role test: analysis default"
+  PLAYBOOK: "roles/analysis/tests/tests_default.yml"
+  LOGFILE_PREFIX: "role-analysis_default"

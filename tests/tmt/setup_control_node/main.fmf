@@ -1,12 +1,7 @@
 summary: Setup control node for all tests
-framework: beakerlib
 test: ./setup_control_node.sh
 duration: 30m
 tag: setup_control_node
 order: 10
-require:
-    - beakerlib
+require+:
     - git
-    - type: library
-      url: https://github.com/linux-system-roles/tft-tests
-      name: /library/upstream_library

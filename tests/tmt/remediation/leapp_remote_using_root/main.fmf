@@ -1,15 +1,13 @@
 summary: Test remote using root remediation
-framework: beakerlib
-test: ./test.sh
 duration: 2h
 tag:
   - remediation
   - leapp_remote_using_root
   - 7to8
   - 8to9
-order: 20
-require:
-    - beakerlib
-    - type: library
-      url: https://github.com/linux-system-roles/tft-tests
-      name: /library/upstream_library
+environment:
+  TEST_NAME: "Remediation: leapp_remote_using_root"
+  PLAYBOOK: "roles/remediate/tests/tests_remediation.yml"
+  LOGFILE_PREFIX: "remediation-leapp_remote_using_root"
+  REMEDIATION_NAME: "leapp_remote_using_root"
+  INHIBITOR_NAME: "leapp_remote_using_root"

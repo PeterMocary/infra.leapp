@@ -7,13 +7,14 @@ rlJournalStart
         rlRun "rlImport leapp_lib"
         source "$TMT_PLAN_DATA/leapp_test_env.sh"
     rlPhaseEnd
-    rlPhaseStartTest "Role test: analysis hostvars"
+    rlPhaseStartTest "$TEST_NAME"
         managed_node=$(echo "$managed_nodes" | awk '{print $1}')
-        playbook="$coll_path/roles/analysis/tests/tests_hostvars.yml"
-        LOGFILE="role-analysis_hostvars-${managed_node}-ANSIBLE-${SR_ANSIBLE_VER}"
+        playbook="$coll_path/$PLAYBOOK"
+        LOGFILE="${LOGFILE_PREFIX}-${managed_node}-ANSIBLE-${SR_ANSIBLE_VER}"
         lsrRunPlaybook "$playbook" "" "$SR_SKIP_TAGS" "$managed_node" "$LOGFILE" "$SR_ANSIBLE_VERBOSITY"
     rlPhaseEnd
     rlPhaseStartCleanup
         lsrSubmitManagedNodesLogs
+        lsrReserveSystems "$SR_RESERVE_SYSTEMS"
     rlPhaseEnd
 rlJournalEnd
