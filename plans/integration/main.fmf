@@ -15,3 +15,10 @@ adjust+:
         how: fmf
         where: control_node
         filter: "tag:integration & tag:upgrade_custom"
+  - when: >-
+      upgrade_type is defined
+      and upgrade_type != custom
+    prepare+:
+      - name: Unsupported upgrade_type for integration tests
+        how: shell
+        script: 'echo "ERROR: No integration tests defined for upgrade_type=${upgrade_type}" && exit 1'
