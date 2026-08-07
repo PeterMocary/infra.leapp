@@ -23,14 +23,65 @@ adjust:
   # Per-version mappings for control node.
   - when: control_node == rhel9
     environment+:
-      COMPOSE_CONTROLLER: "RHEL-9-Nightly"
+      COMPOSE_CONTROLLER_NODE: "RHEL-9-Nightly"
   - when: control_node == rhel10
     environment+:
-      COMPOSE_CONTROLLER: "RHEL-10-Nightly"
+      COMPOSE_CONTROLLER_NODE: "RHEL-10-Nightly"
 
-  # Running locally on local VMs
-  # Example run:
-  # tmt -c managed_node=rhel8 try -p /plans/integration
+  # ---- Testing Farm (CI) ----
+  - when: initiator == testing-farm
+    provision+:
+      - name: control-node01
+        role: control_node
+        how: artemis
+        image: ${COMPOSE_CONTROLLER_NODE}
+        arch: x86_64
+      - name: managed-node01
+        role: managed_node
+        how: artemis
+        image: ${COMPOSE_MANAGED_NODE}
+        arch: x86_64
+
+  # ---- 1minutetip VMs ----
+  # Example: tmt -c 1minutetip=true -c managed_node=rhel8 -c control_node=rhel9 try -p /plans/integration
+  - when: >-
+      initiator is not defined
+      and 1minutetip == true
+    provision+:
+      - name: control-node01
+        role: control_node
+        how: minute
+        image: rhel9
+  - when: >-
+      initiator is not defined
+      and 1minutetip == true
+      and managed_node == rhel7
+    provision+:
+      - name: managed-node01
+        role: managed_node
+        how: minute
+        image: RHEL-7.9
+  - when: >-
+      initiator is not defined
+      and 1minutetip == true
+      and managed_node == rhel8
+    provision+:
+      - name: managed-node01
+        role: managed_node
+        how: minute
+        image: RHEL-8.10.0
+  - when: >-
+      initiator is not defined
+      and 1minutetip == true
+      and managed_node == rhel9
+    provision+:
+      - name: managed-node01
+        role: managed_node
+        how: minute
+        image: RHEL-9.8.0
+
+  # ---- Local VMs (virtual) ----
+  # Example: tmt -c managed_node=rhel8 -c control_node=rhel9 try -p /plans/integration
   - when: >-
       initiator is not defined
       and 1minutetip is not defined
@@ -71,58 +122,6 @@ adjust:
         connection: system
         image: ${RHEL_9_8_image}
 
-  # Running locally by provisioning 1minutetip VMs
-  # Example run:
-  # tmt -c 1minutetip=true -c managed_node=rhel8 try -p /plans/integration
-  - when: >-
-      initiator is not defined
-      and 1minutetip == true
-    provision+:
-      - name: control-node01
-        role: control_node
-        how: minute
-        image: rhel9
-  - when: >-
-      initiator is not defined
-      and 1minutetip == true
-      and managed_node == rhel7
-    provision+:
-      - name: managed-node01
-        role: managed_node
-        how: minute
-        image: RHEL-7.9
-  - when: >-
-      initiator is not defined
-      and 1minutetip == true
-      and managed_node == rhel8
-    provision+:
-      - name: managed-node01
-        role: managed_node
-        how: minute
-        image: RHEL-8.10.0
-  - when: >-
-      initiator is not defined
-      and 1minutetip == true
-      and managed_node == rhel9
-    provision+:
-      - name: managed-node01
-        role: managed_node
-        how: minute
-        image: RHEL-9.8.0
-
-  # Running from CI in testing-farm
-  - when: initiator == testing-farm
-    provision+:
-      - name: control-node01
-        role: control_node
-        how: artemis
-        image: ${COMPOSE_CONTROLLER}
-        arch: x86_64
-      - name: managed-node01
-        role: managed_node
-        how: artemis
-        image: ${COMPOSE_MANAGED_NODE}
-        arch: x86_64
 environment:
     SR_ANSIBLE_VER: ""
     SR_REPO_NAME: ""
