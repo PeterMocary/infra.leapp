@@ -17,14 +17,14 @@
 #   - setup: do nothing — the default 1minutetip image config is already unmodified
 # RHEL 9→10: openssh_permit_root_login actor does nothing (pass) — no inhibitor
 ---
-- name: setup | remediate_remote_using_root | Backup /etc/ssh/sshd_config
+- name: setup | leapp_remote_using_root | Backup /etc/ssh/sshd_config
   ansible.builtin.copy:
     src: /etc/ssh/sshd_config
     dest: /etc/ssh/sshd_config.leapp_test_backup
     remote_src: true
     mode: preserve
 
-- name: setup | remediate_remote_using_root | Trigger SSH inhibitor on RHEL 7
+- name: setup | leapp_remote_using_root | Trigger SSH inhibitor on RHEL 7
   when: rhel_base_ver | int == 7
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config

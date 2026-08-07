@@ -1,6 +1,6 @@
 # verify the removed kernel drivers remediation
 ---
-- name: verify | remediate_removed_kernel_drivers | Verify the removed kernel drivers remediation
+- name: verify | leapp_loaded_removed_kernel_drivers | Verify the removed kernel drivers remediation
   ansible.builtin.shell: set -o pipefail; lsmod | awk '{print $1}'
   changed_when: false
   register: lsmod_output

@@ -1,7 +1,7 @@
 # verify the remote using root remediation (enabled)
 # after remediation, SSH should be hardened
 ---
-- name: verify | remediate_remote_using_root | Verify SSH was hardened by remediation
+- name: verify | leapp_remote_using_root | Verify SSH was hardened by remediation
   ansible.builtin.command: grep -E '^{{ item }}' /etc/ssh/sshd_config
   changed_when: false
   register: grep_sshd_config

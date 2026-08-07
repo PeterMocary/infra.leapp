@@ -1,5 +1,5 @@
 ---
-- name: cleanup | remediate_removed_kernel_drivers | Unload test kernel modules
+- name: cleanup | leapp_loaded_removed_kernel_drivers | Unload test kernel modules
   ansible.builtin.include_role:
     name: infra.leapp.common
     tasks_from: manage_kernel_modules.yml

@@ -1,7 +1,7 @@
 # set up the test system to test removed kernel drivers remediation
 # see KERNEL_MODULES.md for more details
 ---
-- name: setup | remediate_removed_kernel_drivers | Set list of test kernel modules
+- name: setup | leapp_loaded_removed_kernel_drivers | Set list of test kernel modules
   ansible.builtin.set_fact:
     leapp_test_kernel_modules: "{{ __test_modules.get(__platform, []) }}"
   vars:
@@ -18,7 +18,7 @@
       RedHat_9:
         - qla3xxx
         - vmw_pvrdma
-- name: setup | remediate_removed_kernel_drivers | Load the test kernel modules
+- name: setup | leapp_loaded_removed_kernel_drivers | Load the test kernel modules
   ansible.builtin.include_role:
     name: infra.leapp.common
     tasks_from: manage_kernel_modules.yml

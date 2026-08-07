@@ -2,7 +2,7 @@
 # verify that lines with "cifs" are commented out
 # verify that there are no lines with "cifs" that are not commented out
 ---
-- name: preupgrade | remediate_cifs | Verify the cifs shares remediation
+- name: verify | leapp_cifs_detected | Verify the cifs shares remediation
   ansible.builtin.command: cat /etc/fstab
   changed_when: false
   register: cat_fstab

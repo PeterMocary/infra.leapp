@@ -4,21 +4,21 @@
 # Same inhibitor trigger logic as remediate_remote_using_root.yml (see that
 # file for detailed explanation of the version-specific inhibitor conditions)
 ---
-- name: setup | remediate_remote_using_root_disabled | Backup /etc/ssh/sshd_config
+- name: setup | leapp_remote_using_root_disabled | Backup /etc/ssh/sshd_config
   ansible.builtin.copy:
     src: /etc/ssh/sshd_config
     dest: /etc/ssh/sshd_config.leapp_test_backup
     remote_src: true
     mode: preserve
 
-- name: setup | remediate_remote_using_root_disabled | Trigger SSH inhibitor on RHEL 7
+- name: setup | leapp_remote_using_root_disabled | Trigger SSH inhibitor on RHEL 7
   when: rhel_base_ver | int == 7
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication"
     line: "PasswordAuthentication no"
 
-- name: setup | remediate_remote_using_root_disabled | Disable SSH remediation
+- name: setup | leapp_remote_using_root_disabled | Disable SSH remediation
   ansible.builtin.set_fact:
     leapp_remediate_ssh_password_auth: false
 
