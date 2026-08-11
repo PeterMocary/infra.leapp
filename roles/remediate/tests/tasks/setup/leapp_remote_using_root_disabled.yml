@@ -1,25 +1,10 @@
 # set up the test system to trigger the remote root login inhibitor
-# remediation is disabled — the role should NOT fix it
-#
-# Same inhibitor trigger logic as remediate_remote_using_root.yml (see that
-# file for detailed explanation of the version-specific inhibitor conditions)
+# leapp_remediate_ssh_password_auth: false — the role should NOT fix it
 ---
-- name: setup | leapp_remote_using_root_disabled | Backup /etc/ssh/sshd_config
-  ansible.builtin.copy:
-    src: /etc/ssh/sshd_config
-    dest: /etc/ssh/sshd_config.leapp_test_backup
-    remote_src: true
-    mode: preserve
-
-- name: setup | leapp_remote_using_root_disabled | Trigger SSH inhibitor on RHEL 7
-  when: rhel_base_ver | int == 7
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "^PasswordAuthentication"
-    line: "PasswordAuthentication no"
+- name: setup | leapp_remote_using_root_disabled | Include remote_using_root setup
+  ansible.builtin.include_tasks: leapp_remote_using_root.yml
 
 - name: setup | leapp_remote_using_root_disabled | Disable SSH remediation
   ansible.builtin.set_fact:
     leapp_remediate_ssh_password_auth: false
-
 ...
