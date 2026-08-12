@@ -1,9 +1,0 @@
-summary: Test remediate role postgresql data handling
-duration: 1h
-tag:
-  - role_test
-  - remediate
-environment:
-  TEST_NAME: "Role test: remediate postgresql"
-  PLAYBOOK: "roles/remediate/tests/tests_leapp_old_postgresql_data.yml"
-  LOGFILE_PREFIX: "role-remediate_postgresql"
