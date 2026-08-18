@@ -38,21 +38,19 @@
 
     - name: analysis-leapp | Leapp preupgrade report
       ansible.builtin.shell: >
-        set -o pipefail;
         export PATH={{ leapp_os_path }};
         ulimit -n 16384;
         leapp preupgrade --report-schema=1.2.0
         {{ leapp_preupg_opts }}
         {{ __leapp_enable_repos_args }}
-        2>&1 | tee -a {{ __leapp_log_file }}
+        >> {{ __leapp_log_file }} 2>&1 || true;
+        grep -q 'report has been generated' {{ __leapp_log_file }}
       environment: "{{ leapp_env_vars }}"
       changed_when: true
-      register: leapp
       args:
         executable: /bin/bash
       async: "{{ leapp_async_timeout_maximum | int }}"
       poll: "{{ leapp_async_poll_interval | int }}"
-      failed_when: "'report has been generated' not in leapp.stdout"
 
     - name: analysis-leapp | Include check-results-file.yml
       ansible.builtin.include_tasks: check-results-file.yml
