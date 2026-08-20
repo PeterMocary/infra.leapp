@@ -29,7 +29,9 @@ adjust:
       COMPOSE_CONTROLLER_NODE: "RHEL-10-Nightly"
 
   # ---- Testing Farm (CI) ----
-  - when: initiator == testing-farm
+  - when: >-
+      initiator == testing-farm
+      and arch is not defined
     provision+:
       - name: control-node01
         role: control_node
@@ -41,6 +43,45 @@ adjust:
         how: artemis
         image: ${COMPOSE_MANAGED_NODE}
         arch: x86_64
+
+  - when: initiator == testing-farm and arch == s390x
+    provision+:
+      - name: control-node01
+        role: control_node
+        how: artemis
+        image: ${COMPOSE_CONTROLLER_NODE}
+        arch: s390x
+      - name: managed-node01
+        role: managed_node
+        how: artemis
+        image: ${COMPOSE_MANAGED_NODE}
+        arch: s390x
+
+  - when: initiator == testing-farm and arch == aarch64
+    provision+:
+      - name: control-node01
+        role: control_node
+        how: artemis
+        image: ${COMPOSE_CONTROLLER_NODE}
+        arch: aarch64
+      - name: managed-node01
+        role: managed_node
+        how: artemis
+        image: ${COMPOSE_MANAGED_NODE}
+        arch: aarch64
+
+  - when: initiator == testing-farm and arch == ppc64le
+    provision+:
+      - name: control-node01
+        role: control_node
+        how: artemis
+        image: ${COMPOSE_CONTROLLER_NODE}
+        arch: ppc64le
+      - name: managed-node01
+        role: managed_node
+        how: artemis
+        image: ${COMPOSE_MANAGED_NODE}
+        arch: ppc64le
 
   # ---- 1minutetip VMs ----
   # Example: tmt -c 1minutetip=true -c managed_node=rhel8 -c control_node=rhel9 try -p /plans/integration
@@ -202,14 +243,14 @@ prepare:
         exit 1
       fi
       {
-        echo "[rhel-${OS_MAJOR_VERSION}-for-x86_64-baseos-rpms]"
-        echo "name=BaseOS for x86_64"
+        echo "[rhel-${OS_MAJOR_VERSION}-baseos-rpms]"
+        echo "name=BaseOS"
         echo "baseurl=${!BASEOS_VAR}"
         echo "enabled = 1"
         echo "gpgcheck=0"
         echo ""
-        echo "[rhel-${OS_MAJOR_VERSION}-for-x86_64-appstream-rpms]"
-        echo "name=AppStream for x86_64"
+        echo "[rhel-${OS_MAJOR_VERSION}-appstream-rpms]"
+        echo "name=AppStream"
         echo "baseurl=${!APPSTREAM_VAR}"
         echo "enabled = 1"
         echo "gpgcheck=0"

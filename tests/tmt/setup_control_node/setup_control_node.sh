@@ -111,8 +111,6 @@ SR_ANSIBLE_INJECT_FACT_VARS="${SR_ANSIBLE_INJECT_FACT_VARS:-false}"
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "~~~ Environment Variables Definition - BEGIN"
-echo "ARCH_CONTROLLER=${ARCH_CONTROLLER}"
-echo "ARCH_MANAGED_NODE=${ARCH_MANAGED_NODE}"
 echo "COMPOSE_CONTROLLER_NODE=${COMPOSE_CONTROLLER_NODE}"
 echo "COMPOSE_MANAGED_NODE=${COMPOSE_MANAGED_NODE}"
 env | grep -E '^SR_'
