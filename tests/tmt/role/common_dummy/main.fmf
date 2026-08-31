@@ -1,0 +1,9 @@
+summary: Dummy role test to verify CI discovery
+duration: 1h
+tag:
+  - role_test
+  - common
+environment:
+  TEST_NAME: "Role test: common dummy"
+  PLAYBOOK: "roles/common/tests/tests_dummy.yml"
+  LOGFILE_PREFIX: "role-common_dummy"
