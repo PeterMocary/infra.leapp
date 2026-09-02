@@ -1,0 +1,14 @@
+---
+- name: Test
+  hosts: all
+  vars:
+    job_name: test_dummy
+  tasks:
+    - name: Test | Dummy test that always passes
+      ansible.builtin.assert:
+        that:
+          - true
+        success_msg: Dummy test passed
+        fail_msg: Dummy test failed
+
+...
